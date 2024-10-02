@@ -14,19 +14,19 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3 # Actualizamos a v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3 # Actualizamos a v3
         with:
-          node-version: '16'
+          node-version: '16' # O puedes usar '20' si prefieres ya estar en esa versión
 
       - name: Install dependencies
         run: npm install
 
       - name: Set up environment variables
         run: |
-          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env  # Usamos la URI remota de Atlas
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
 
       - name: Build the project
@@ -35,19 +35,19 @@ jobs:
       - name: Run unit tests
         run: npm run test
         env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }} # Utiliza el secreto para la conexión remota
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Start the app
         run: npm run start &
         env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }} # URI remota
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Run e2e tests
         run: npm run test:e2e
         env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }} # URI remota
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Stop app
