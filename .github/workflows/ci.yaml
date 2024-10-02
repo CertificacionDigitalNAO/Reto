@@ -1,54 +1,56 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline # Nombre del pipeline
 
 on:
   push:
     branches:
-      - main
+      - main # Ejecutar el pipeline en cada push a la rama 'main'
   pull_request:
     branches:
-      - main
+      - main # Ejecutar el pipeline en cada pull request a la rama 'main'
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Usar la última versión de Ubuntu como entorno de ejecución
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3 # Actualizamos a v3
+        uses: actions/checkout@v3 # Clonar el repositorio en el entorno de ejecución
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3 # Actualizamos a v3
+        uses: actions/setup-node@v3 # Configurar Node.js en el entorno de ejecución
         with:
-          node-version: '16' # O puedes usar '20' si prefieres ya estar en esa versión
+          node-version: '16' # Especificar la versión de Node.js a usar
 
       - name: Install dependencies
-        run: npm install
+        run: npm install # Instalar las dependencias del proyecto
 
       - name: Set up environment variables
         run: |
           echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-
+      # Configurar la variable de entorno MONGODB_URI
+      # Configurar la variable de entorno JWT_SECRET
+      
       - name: Build the project
-        run: npm run build
+        run: npm run build # Construir el proyecto
 
       - name: Run unit tests
-        run: npm run test
+        run: npm run test # Ejecutar las pruebas unitarias
         env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }} # Pasar la variable de entorno MONGODB_URI a las pruebas
+          JWT_SECRET: ${{ secrets.JWT_SECRET }} # Pasar la variable de entorno JWT_SECRET a las pruebas
 
       - name: Start the app
-        run: npm run start &
+        run: npm run start & # Iniciar la aplicación en segundo plano
         env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }} # Pasar la variable de entorno MONGODB_URI a la aplicación
+          JWT_SECRET: ${{ secrets.JWT_SECRET }} # Pasar la variable de entorno JWT_SECRET a la aplicación
 
       - name: Run e2e tests
-        run: npm run test:e2e
+        run: npm run test:e2e # Ejecutar las pruebas de extremo a extremo
         env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }} # Pasar la variable de entorno MONGODB_URI a las pruebas e2e
+          JWT_SECRET: ${{ secrets.JWT_SECRET }} # Pasar la variable de entorno JWT_SECRET a las pruebas e2e
 
       - name: Stop app
-        run: kill $(jobs -p) || true
+        run: kill $(jobs -p) || true # Detener la aplicación
