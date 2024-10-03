@@ -34,7 +34,7 @@ jobs:
         run: npm run build # Construye el proyecto
 
       - name: Run unit tests
-        run: npm run test # Ejecuta las Pruebas Unitarias
+        run: npm run test # Ejecuta las pruebas unitarias
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }} # Pasa la variable de entorno MONGODB_URI a las pruebas
           JWT_SECRET: ${{ secrets.JWT_SECRET }} # Pasa la variable de entorno JWT_SECRET a las pruebas
@@ -94,3 +94,22 @@ jobs:
 
       - name: Stop and remove Docker container
         run: docker stop my-app-container && docker rm my-app-container # Detiene y elimina el contenedor Docker
+
+  deploy:
+    runs-on: ubuntu-latest # Utiliza la última versión de Ubuntu como entorno de ejecución
+    needs: e2e-tests # Este trabajo depende del trabajo de pruebas e2e
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3 # Clona el repositorio en el entorno de ejecución
+
+      - name: Login to Render
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }} # Utiliza la clave API de Render almacenada en los secretos
+        run: |
+          curl -X POST \
+          -H "Authorization: Bearer $RENDER_API_KEY" \
+          -H "Content-Type: application/json" \
+          -d '{"serviceId": "${{ secrets.RENDER_SERVICE_ID }}", "clearCache": true}' \
+          https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys
+        # Despliega la aplicación en Render
