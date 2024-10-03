@@ -1,0 +1,52 @@
+# Ignora node_modules
+node_modules
+
+# Ignora archivos de salida de compilación
+dist
+build
+
+# Ignora archivos de configuración de entorno
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Ignora logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+
+# Ignora archivos de cobertura de pruebas
+coverage
+.nyc_output
+
+# Ignora archivos de configuración de IDEs y editores
+.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Ignora directorios temporales
+.temp
+.tmp
+
+# Ignora datos de runtime
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Ignora informes de diagnóstico
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

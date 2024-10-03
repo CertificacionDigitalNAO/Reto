@@ -40,17 +40,17 @@ jobs:
           MONGODB_URI: ${{ secrets.MONGODB_URI }} # Pasar la variable de entorno MONGODB_URI a las pruebas
           JWT_SECRET: ${{ secrets.JWT_SECRET }} # Pasar la variable de entorno JWT_SECRET a las pruebas
 
-      - name: Start the app
-        run: npm run start & # Iniciar la aplicación en segundo plano
+      - name: Build Docker image
+        run: docker build -t my-app:latest . # Construir la imagen de Docker
+
+      - name: Run Docker container
+        run: docker run -d -p 3000:3000 --name my-app-container my-app:latest # Ejecutar el contenedor de Docker
         env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }} # Pasar la variable de entorno MONGODB_URI a la aplicación
-          JWT_SECRET: ${{ secrets.JWT_SECRET }} # Pasar la variable de entorno JWT_SECRET a la aplicación
+          MONGODB_URI: ${{ secrets.MONGODB_URI }} # Pasar la variable de entorno MONGODB_URI al contenedor
+          JWT_SECRET: ${{ secrets.JWT_SECRET }} # Pasar la variable de entorno JWT_SECRET al contenedor
 
       - name: Run e2e tests
-        run: npm run test:e2e # Ejecutar las pruebas de extremo a extremo
-        env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }} # Pasar la variable de entorno MONGODB_URI a las pruebas e2e
-          JWT_SECRET: ${{ secrets.JWT_SECRET }} # Pasar la variable de entorno JWT_SECRET a las pruebas e2e
+        run: docker exec my-app-container npm run test:e2e # Ejecutar las pruebas de extremo a extremo dentro del contenedor
 
-      - name: Stop app
-        run: kill $(jobs -p) || true # Detener la aplicación
+      - name: Stop and remove Docker container
+        run: docker stop my-app-container && docker rm my-app-container # Detener y eliminar el contenedor de Docker
