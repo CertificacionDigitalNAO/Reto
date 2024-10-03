@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3 # Configurar Node.js en el entorno de ejecución
         with:
-          node-version: '16' # Especificar la versión de Node.js a usar
+          node-version: '20' # Especificar la versión de Node.js a usar
 
       - name: Install dependencies
         run: npm install # Instalar las dependencias del proyecto
@@ -30,7 +30,7 @@ jobs:
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
       # Configurar la variable de entorno MONGODB_URI
       # Configurar la variable de entorno JWT_SECRET
-      
+
       - name: Build the project
         run: npm run build # Construir el proyecto
 
